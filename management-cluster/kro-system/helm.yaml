@@ -1,13 +1,15 @@
-apiVersion: source.toolkit.fluxcd.io/v1beta1
-kind: HelmRepository
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: OCIRepository
 metadata:
   name: kro
   namespace: kro-system
 spec:
   interval: 1h0m0s
   url: oci://ghcr.io/kro-run/kro/kro
+  ref:
+    tag:  "0.2.3"
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: kro
@@ -20,13 +22,8 @@ spec:
     ignore:
       - paths: ["/spec/replicas"]
 
-  chart:
-    spec:
-      chart: kro
-      sourceRef:
-        kind: HelmRepository
-        name: kro
-        namespace: kro-system
-      version: "0.2.3"
+  chartRef:
+    kind: OCIRepository
+    name: kro
   
   values:
