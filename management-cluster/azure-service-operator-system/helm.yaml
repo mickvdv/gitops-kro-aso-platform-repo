@@ -32,4 +32,4 @@ spec:
       version: "2.13.0" # specify the version you want to use
   
   values: # ingress class name ingress-internal, default
-    crdPattern: 'resources.azure.com/*;containerservice.azure.com/*;'
+    crdPattern: 'resources.azure.com/*;containerservice.azure.com/*'
