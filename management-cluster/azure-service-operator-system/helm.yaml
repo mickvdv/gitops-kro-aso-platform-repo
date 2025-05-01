@@ -7,7 +7,6 @@ spec:
   interval: 1h0m0s
   url: https://raw.githubusercontent.com/Azure/azure-service-operator/main/v2/charts
 ---
-# HelmRelease for the ingress-nginx chart
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
@@ -16,7 +15,6 @@ metadata:
 spec:
   interval: 1m0s
   
-  # enable drift detection
   driftDetection:
     mode: enabled
     ignore:
@@ -29,7 +27,7 @@ spec:
         kind: HelmRepository
         name: aso2
         namespace: azure-service-operator-system
-      version: "2.13.0" # specify the version you want to use
+      version: "2.13.0"
   
-  values: # ingress class name ingress-internal, default
+  values:
     crdPattern: 'resources.azure.com/*;containerservice.azure.com/*'
