@@ -1,10 +1,11 @@
 apiVersion: kro.run/v1alpha1
 kind: WorkloadCluster
 metadata:
-  name: demo-workload
+  name: demo-workload-cluster
   namespace: workloads
 spec:
   name: demo-workload
   repository: "ssh://git@github.com/mickvdv/gitops-kro-aso-demo-workload.git"
   region: "westeurope"
+  kubernetesVersion: "1.32.1"
 
