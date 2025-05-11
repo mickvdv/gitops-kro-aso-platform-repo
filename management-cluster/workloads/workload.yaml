@@ -1,10 +1,10 @@
 apiVersion: kro.run/v1alpha1
 kind: Workload
 metadata:
-  name: workload-tmp
+  name: demo-workload
   namespace: workloads
 spec:
-  name: workload-tmp
-  repository: "..."
+  name: demo-workload
+  repository: git@github.com:mickvdv/gitops-kro-aso-demo-workload.git
   region: "westeurope"
 

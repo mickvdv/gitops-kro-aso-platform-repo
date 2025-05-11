@@ -76,6 +76,11 @@ spec:
             spec:
 
               restartPolicy: Never # required for the feature
+              volumes:
+              - name: flux-key
+                secret:
+                  secretName: flux-key
+
               containers:
               - name: azure-cli
                 image: ghcr.io/mickvdv/azure-cli-k8s:main
@@ -83,7 +88,11 @@ spec:
                 envFrom:
                 - secretRef:
                     name: service-principal
-          
+
+                volumeMounts:
+                - name: flux-key
+                  mountPath: /app/ssh-key/
+
                 command:
                 - bash
                 - -c
@@ -92,6 +101,4 @@ spec:
                 - az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID;
                   az aks get-credentials --resource-group ${schema.spec.name}-rg --name ${schema.spec.name}-aks --overwrite-existing;
                   kubectl get nodes;
-                  flux install;
-                  flux create source git workload-repo --url=https://github.com/mickvdv/gitops-kro-aso-demo-workload.git --branch=main --interval=1m -n flux-system;
-                  flux create kustomization workload-repo-sync --source=GitRepository/workload-repo --path="./${schema.spec.name}-gitops" --prune=true --interval=1m -n flux-system;
+                  flux bootstrap git ${schema.spec.repository} --private-key-file=/app/ssh-key/flux-ssh-key --path="./${schema.spec.name}-gitops"
