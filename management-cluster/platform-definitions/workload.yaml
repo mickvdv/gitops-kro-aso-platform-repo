@@ -64,7 +64,7 @@ spec:
                 - "2"
                 - "3"
 
-    - id: bootstrap-job
+    - id: bootstrapJob
       template:
         apiVersion: batch/v1
         kind: Job
