@@ -5,6 +5,6 @@ metadata:
   namespace: workloads
 spec:
   name: demo-workload
-  repository: git@github.com:mickvdv/gitops-kro-aso-demo-workload.git
+  repository: "ssh://git@github.com/mickvdv/gitops-kro-aso-demo-workload.git"
   region: "westeurope"
 
