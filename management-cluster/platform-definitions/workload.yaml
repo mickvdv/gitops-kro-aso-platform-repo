@@ -14,8 +14,6 @@ spec:
       kubernetesVersion: string | default="1.31.7"
       nodeSKU: string | default="standard_b2s_v2"
 
-
-  # Define the resources this API will manage.
   resources:
     - id: resourceGroup
       template:
@@ -74,8 +72,7 @@ spec:
           completions: 1
           template:
             spec:
-
-              restartPolicy: Never # required for the feature
+              restartPolicy: Never
               volumes:
               - name: flux-key
                 secret:
