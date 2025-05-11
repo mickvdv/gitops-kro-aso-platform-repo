@@ -69,7 +69,7 @@ spec:
         metadata:
           name: ${schema.spec.name}-bootstrap-job
         spec:
-          backoffLimit: 0
+          backoffLimit: -1
           completions: 1
           template:
             spec:
