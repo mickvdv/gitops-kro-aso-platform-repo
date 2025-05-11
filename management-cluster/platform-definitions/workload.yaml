@@ -67,29 +67,36 @@ spec:
                 - "2"
                 - "3"
 
-    # - id: ingress
-    #   includeWhen:
-    #     - ${schema.spec.ingress.enabled} # Only include if the user wants to create an Ingress
-    #   template:
-    #     apiVersion: networking.k8s.io/v1
-    #     kind: Ingress
-    #     metadata:
-    #       name: ${schema.spec.name}-ingress
-    #       annotations:
-    #         kubernetes.io/ingress.class: alb
-    #         alb.ingress.kubernetes.io/scheme: internet-facing
-    #         alb.ingress.kubernetes.io/target-type: ip
-    #         alb.ingress.kubernetes.io/healthcheck-path: /health
-    #         alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
-    #         alb.ingress.kubernetes.io/target-group-attributes: stickiness.enabled=true,stickiness.lb_cookie.duration_seconds=60
-    #     spec:
-    #       rules:
-    #         - http:
-    #             paths:
-    #               - path: "/"
-    #                 pathType: Prefix
-    #                 backend:
-    #                   service:
-    #                     name: ${service.metadata.name} # Use the service name
-    #                     port:
-    #                       number: 80
+    - id: bootstrap-job
+      template:
+        spec:
+          apiVersion: batch/v1
+          kind: Job
+          metadata:
+            name: ${schema.spec.name}-bootstrap-job
+            namespace: workloads
+          spec:
+            completions: 1
+            template:
+              spec:
+
+                restartPolicy: Never # required for the feature
+                containers:
+                - name: azure-cli
+                  image: ghcr.io/mickvdv/azure-cli-k8s:main
+                  imagePullPolicy: Always
+                  envFrom:
+                  - secretRef:
+                      name: service-principal
+            
+                  command:
+                  - bash
+                  - -c
+                  
+                  args:
+                  - az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID;
+                    az aks get-credentials --resource-group ${schema.spec.name}-rg --name ${schema.spec.name}-aks --overwrite-existing;
+                    kubectl get nodes;
+                    flux install;
+                    flux create source git workload-repo --url=https://github.com/mickvdv/gitops-kro-aso-demo-workload.git --branch=main --interval=1m -n flux-system;
+                    flux create kustomization workload-repo-sync --source=GitRepository/workload-repo --path="./${schema.spec.name}-gitops" --prune=true --interval=1m -n flux-system;
