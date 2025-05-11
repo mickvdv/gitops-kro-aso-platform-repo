@@ -13,10 +13,7 @@ spec:
       region: string
       kubernetesVersion: string | default="1.31.7"
       nodeSKU: string | default="standard_b2s_v2"
-    status:
-      # # Fields the controller will inject into instances status.
-      # resourceGroupConditio: ${deployment.status.conditions}
-      # availableReplicas: ${deployment.status.availableReplicas}
+
 
   # Define the resources this API will manage.
   resources:
@@ -69,34 +66,33 @@ spec:
 
     - id: bootstrap-job
       template:
+        apiVersion: batch/v1
+        kind: Job
+        metadata:
+          name: ${schema.spec.name}-bootstrap-job
+          namespace: workloads
         spec:
-          apiVersion: batch/v1
-          kind: Job
-          metadata:
-            name: ${schema.spec.name}-bootstrap-job
-            namespace: workloads
-          spec:
-            completions: 1
-            template:
-              spec:
+          completions: 1
+          template:
+            spec:
 
-                restartPolicy: Never # required for the feature
-                containers:
-                - name: azure-cli
-                  image: ghcr.io/mickvdv/azure-cli-k8s:main
-                  imagePullPolicy: Always
-                  envFrom:
-                  - secretRef:
-                      name: service-principal
-            
-                  command:
-                  - bash
-                  - -c
-                  
-                  args:
-                  - az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID;
-                    az aks get-credentials --resource-group ${schema.spec.name}-rg --name ${schema.spec.name}-aks --overwrite-existing;
-                    kubectl get nodes;
-                    flux install;
-                    flux create source git workload-repo --url=https://github.com/mickvdv/gitops-kro-aso-demo-workload.git --branch=main --interval=1m -n flux-system;
-                    flux create kustomization workload-repo-sync --source=GitRepository/workload-repo --path="./${schema.spec.name}-gitops" --prune=true --interval=1m -n flux-system;
+              restartPolicy: Never # required for the feature
+              containers:
+              - name: azure-cli
+                image: ghcr.io/mickvdv/azure-cli-k8s:main
+                imagePullPolicy: Always
+                envFrom:
+                - secretRef:
+                    name: service-principal
+          
+                command:
+                - bash
+                - -c
+
+                args:
+                - az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID;
+                  az aks get-credentials --resource-group ${schema.spec.name}-rg --name ${schema.spec.name}-aks --overwrite-existing;
+                  kubectl get nodes;
+                  flux install;
+                  flux create source git workload-repo --url=https://github.com/mickvdv/gitops-kro-aso-demo-workload.git --branch=main --interval=1m -n flux-system;
+                  flux create kustomization workload-repo-sync --source=GitRepository/workload-repo --path="./${schema.spec.name}-gitops" --prune=true --interval=1m -n flux-system;
