@@ -70,7 +70,6 @@ spec:
         kind: Job
         metadata:
           name: ${schema.spec.name}-bootstrap-job
-          namespace: workloads
         spec:
           completions: 1
           template:
