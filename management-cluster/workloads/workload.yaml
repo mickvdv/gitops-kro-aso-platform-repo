@@ -1,0 +1,10 @@
+apiVersion: kro.run/v1alpha1
+kind: Workload
+metadata:
+  name: workload-tmp
+  namespace: workloads
+spec:
+  name: workload-tmp
+  repository: "..."
+  region: "westeurope"
+
