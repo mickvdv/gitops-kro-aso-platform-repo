@@ -99,4 +99,4 @@ spec:
                 - az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID;
                   az aks get-credentials --resource-group ${schema.spec.name}-rg --name ${schema.spec.name}-aks --overwrite-existing;
                   kubectl get nodes;
-                  flux bootstrap git --url=${schema.spec.repository} --private-key-file=/app/ssh-key/flux-ssh-key --path="./${schema.spec.name}-gitops"
+                  flux bootstrap git --url=${schema.spec.repository} --private-key-file=/app/ssh-key/identity --path="./${schema.spec.name}-gitops"
