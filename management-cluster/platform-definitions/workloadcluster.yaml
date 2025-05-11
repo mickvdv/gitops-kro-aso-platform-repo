@@ -6,7 +6,7 @@ metadata:
 spec:
   schema:
     apiVersion: v1alpha1
-    kind: Workload
+    kind: WorkloadCluster
     spec:
       name: string
       repository: string

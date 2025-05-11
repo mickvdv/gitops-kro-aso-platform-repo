@@ -1,5 +1,5 @@
 apiVersion: kro.run/v1alpha1
-kind: Workload
+kind: WorkloadCluster
 metadata:
   name: demo-workload
   namespace: workloads
