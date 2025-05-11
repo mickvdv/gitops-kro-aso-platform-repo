@@ -11,7 +11,7 @@ spec:
       name: string
       repository: string
       region: string
-      kubernetesVersion: string | default="1.31.7"
+      kubernetesVersion: string | default="1.32.1"
       nodeSKU: string | default="standard_b2s_v2"
     
   resources:
